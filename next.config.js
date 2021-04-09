@@ -23,6 +23,8 @@ const fallbackDefaultExports = {
 }
 
 module.exports = withBundleAnalyzer({
+    target: 'serverless',
+
     pageExtensions: ['js', 'jsx', 'mdx'],
 
     experimental: {
