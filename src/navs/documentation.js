@@ -6,8 +6,8 @@ const pages = createPageList(
 )
 
 export const documentationNav = {
-    'Introduction': [
-        pages['test'],
-        pages['test2'],
+    'Storefront Core': [
+        pages['extensibility'],
+        // pages['test2'],
     ],
 }

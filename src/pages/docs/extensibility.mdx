@@ -1,0 +1,78 @@
+---
+title: "Extensibility"
+description: "Extending/overriding React components & hooks"
+---
+
+Reasoning behind NeoStorefront extensibility framework
+------------------------------------------------------
+
+Here are key qualities which we thought the extensibility framework should possess:
+
+- easy & stable upgrades of the packages
+- great dev experience
+
+For great dev experience we thought that the following is a must:
+
+- preserving & utilising type information and using it for type checking
+- proper navigation through the code base
+- ideally developers shouldn't learn any new concepts / fiddle with config files
+
+Extending & Overriding React Components
+---------------------------------------
+
+In case when the default behaviour of the React component needs to be overridden or altered - you can use **JsxFactory** to override it like this:
+
+```jsx
+import { JsxFactory } from '@neostorefront2/ext'
+import { CartItem } from '@neostorefront2/cart'
+
+function MyCartItem(props) {
+  return (
+    <div>
+       Something custom
+       <CartItem _super {...props} />
+    </div>
+  )
+}
+
+JsxFactory.register(CartItem, MyCartItem)
+```
+
+All NeoStorefront packages use a custom *jsx factory* which allows you to register your own components
+to be rendered instead of the default ones.
+
+Passing **_super** property allows you to render the original component inside your override.
+
+Extending & Overriding Hooks
+----------------------------
+
+In case when the default behaviour of the React component needs to be overridden or altered - you can use **Hooks.override** function to override them:
+
+```js
+import { Hooks } from '@neostorefront2/ext'
+import { useCartItemCount } from '@neostorefront2/platform'
+
+Hooks.override(useCartItemCount, () => {
+  const superValue = useCartItemCount._super(); // _super contains a pointer to the original hook
+  console.log('we are in useCartItemCount() override. superValue=', superValue);
+  return superValue + 1;
+})
+```
+
+Making Your Own Hooks Extensible
+--------------------------------
+
+```js
+// useCartItemCount.ts
+
+import { Hooks } from '@neostorefront2/ext'
+
+export const useCartItemCount = Hooks.export(
+    function useCartItemCount(): number {
+        // some custom logic
+        return 0;
+    }
+)
+```
+
+After that, you can extend your hook with **Hooks.override()**.
